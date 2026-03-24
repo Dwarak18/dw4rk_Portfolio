@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dwarak — Cybersecurity Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0A0A;--bg2:#111;--bg3:#161616;
+  --accent:#00FF9F;--accent-dim:rgba(0,255,159,.10);--accent-mid:rgba(0,255,159,.35);
+  --gray:#A1A1A1;--gray-dim:#2A2A2A;--gray-mid:#3A3A3A;--white:#EDEDED;
+  --sidebar-w:72px;--sidebar-exp:200px;
+  --font-head:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);overflow-x:hidden;cursor:none;min-width:320px}
+
+/* CURSOR */
+#cursor{position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
+#cursor-ring{position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid rgba(0,255,159,.3);border-radius:50%;pointer-events:none;transition:transform .35s cubic-bezier(.23,1,.32,1),width .25s,height .25s,border-color .25s;transform:translate(-50%,-50%)}
+body.hovering #cursor-ring{width:52px;height:52px;border-color:var(--accent)}
+body.hovering #cursor{transform:translate(-50%,-50%) scale(.4)}
+
+/* BG CANVAS */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.28}
+
+/* SIDEBAR */
+#sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);z-index:200;display:flex;flex-direction:column;align-items:center;background:rgba(10,10,10,.88);backdrop-filter:blur(20px);border-right:1px solid var(--gray-dim);transition:width .25s cubic-bezier(.23,1,.32,1);overflow:hidden}
+#sidebar:hover{width:var(--sidebar-exp)}
+.sidebar-logo{width:100%;padding:28px 0 24px;display:flex;align-items:center;justify-content:center;min-height:80px;flex-shrink:0;border-bottom:1px solid var(--gray-dim)}
+.sidebar-logo span{font-family:var(--font-mono);font-size:.7rem;font-weight:500;letter-spacing:.14em;color:var(--accent);white-space:nowrap}
+.sidebar-nav{flex:1;width:100%;padding:24px 0;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.nav-item{width:100%;height:44px;display:flex;align-items:center;padding:0 0 0 26px;gap:14px;cursor:pointer;position:relative;white-space:nowrap;transition:background .2s}
+.nav-item::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:0;background:var(--accent);transition:height .25s cubic-bezier(.23,1,.32,1);border-radius:0 2px 2px 0}
+.nav-item:hover{background:rgba(255,255,255,.025)}
+.nav-item.active::before{height:24px}
+.nav-item.active .nav-icon{stroke:var(--accent);filter:drop-shadow(0 0 5px var(--accent))}
+.nav-item.active .nav-label{color:var(--accent)}
+.nav-icon{width:16px;height:16px;flex-shrink:0;fill:none;stroke:var(--gray-mid);stroke-width:1.5;transition:stroke .2s,filter .2s}
+.nav-item:hover .nav-icon{stroke:var(--gray)}
+.nav-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;color:var(--gray-mid);text-transform:uppercase;opacity:0;transition:opacity .15s;pointer-events:none}
+#sidebar:hover .nav-label{opacity:1}
+.sidebar-bottom{width:100%;padding:20px 0 28px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--gray-dim);flex-shrink:0}
+.theme-toggle{width:36px;height:20px;background:var(--gray-dim);border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;transition:background .25s}
+.theme-toggle::after{content:'';position:absolute;left:3px;top:3px;width:14px;height:14px;background:var(--gray);border-radius:50%;transition:transform .25s,background .25s}
+.theme-toggle.on{background:var(--accent-dim);border:1px solid rgba(0,255,159,.3)}
+.theme-toggle.on::after{transform:translateX(16px);background:var(--accent)}
+
+/* MAIN */
+main{margin-left:var(--sidebar-w);position:relative;z-index:1}
+
+/* SECTIONS */
+section{min-height:100vh;padding:0 120px;display:flex;flex-direction:column;justify-content:center;position:relative}
+
+/* HERO */
+#home{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding-left:120px;padding-right:60px;height:100vh;min-height:100vh;max-height:100vh}
+.hero-left{padding-right:40px}
+.hero-status{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-bottom:24px;opacity:0;animation:fadeUp .5s .2s forwards}
+.hero-status::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hero-name{font-family:var(--font-head);font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-.03em;color:var(--white);opacity:0;animation:fadeUp .6s .35s forwards}
+.hero-role{font-size:20px;font-weight:400;color:var(--gray);margin-top:6px;font-family:var(--font-body);opacity:0;animation:fadeUp .6s .5s forwards}
+.hero-tagline{font-family:var(--font-head);font-size:28px;font-weight:500;color:var(--white);line-height:1.35;margin-top:24px;opacity:0;animation:fadeUp .6s .65s forwards}
+.hero-desc{font-size:16px;color:var(--gray);line-height:1.75;max-width:420px;margin-top:20px;opacity:0;animation:fadeUp .6s .8s forwards}
+.hero-sys{margin-top:32px;font-family:var(--font-mono);font-size:13px;line-height:1;color:var(--accent);display:flex;flex-direction:column;gap:6px;opacity:0;animation:fadeUp .6s .95s forwards}
+.sys-row{display:flex;gap:8px}
+.sys-key{color:var(--gray-mid)}
+.hero-btns{display:flex;gap:12px;margin-top:32px;opacity:0;animation:fadeUp .6s 1.1s forwards}
+.btn-primary{height:44px;padding:0 20px;background:var(--accent);color:#000;border:none;border-radius:8px;font-family:var(--font-mono);font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:opacity .2s,box-shadow .2s,transform .2s}
+.btn-primary:hover{opacity:.9;box-shadow:0 0 24px var(--accent-mid);transform:translateY(-1px)}
+.btn-ghost{height:44px;padding:0 20px;background:transparent;border:1px solid var(--gray-dim);color:var(--gray);border-radius:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s,transform .2s}
+.btn-ghost:hover{border-color:var(--gray-mid);color:var(--white);transform:translateY(-1px)}
+
+/* MASCOT */
+.hero-right{display:flex;align-items:center;justify-content:center;position:relative;height:100%}
+.mascot-wrap{position:relative;width:420px;height:420px;opacity:0;animation:fadeIn .9s 1.4s forwards}
+.mascot-frame{width:100%;height:100%;position:relative;animation:float 4s ease-in-out infinite}
+.hero-photo-circle{position:absolute;top:50%;left:50%;width:340px;height:340px;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;background:#0f0f0f;border:2px solid rgba(0,255,159,.45);box-shadow:0 0 0 10px rgba(0,255,159,.05),0 20px 60px rgba(0,0,0,.55)}
+.hero-photo-circle img{width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.mascot-glow{position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,159,.07) 0%,transparent 68%);pointer-events:none}
+.mascot-ring{position:absolute;top:50%;left:50%;width:340px;height:340px;transform:translate(-50%,-50%);border:1px solid rgba(0,255,159,.08);border-radius:50%;animation:ring-pulse 4s ease-in-out infinite}
+.mascot-ring2{position:absolute;top:50%;left:50%;width:410px;height:410px;transform:translate(-50%,-50%);border:1px solid rgba(0,255,159,.04);border-radius:50%;animation:ring-pulse 4s ease-in-out .8s infinite}
+@keyframes ring-pulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.03)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* SECTION LABELS */
+.sec-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';width:48px;height:1px;background:var(--accent);opacity:.35}
+.sec-title{font-family:var(--font-head);font-size:clamp(2rem,3.5vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:48px}
+
+/* ABOUT */
+#about{gap:0}
+.about-inner{width:720px;max-width:100%}
+.about-timeline{margin-top:48px;position:relative}
+.about-tl-line{position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:#1A1A1A}
+.about-tl-item{display:flex;gap:28px;margin-bottom:48px;align-items:flex-start}
+.about-tl-node{flex-shrink:0;margin-top:3px;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--accent);background:var(--bg);box-shadow:0 0 10px rgba(0,255,159,.2);position:relative;z-index:1}
+.about-tl-title{font-family:var(--font-head);font-size:1rem;font-weight:600;color:var(--white);margin-bottom:6px}
+.about-tl-desc{font-size:.88rem;color:var(--gray);line-height:1.75}
+
+/* SKILLS */
+#skills{gap:0}
+.skills-inner{width:800px;max-width:100%}
+.skills-list{display:flex;flex-direction:column;gap:28px;margin-top:8px}
+.skill-row{position:relative}
+.skill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.skill-name{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.06em;color:var(--white)}
+.skill-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--accent)}
+.skill-track{height:6px;background:#1A1A1A;border-radius:4px;overflow:hidden;width:100%;max-width:560px}
+.skill-fill{height:100%;background:var(--accent);border-radius:4px;width:0;transition:width 1.2s cubic-bezier(.23,1,.32,1);box-shadow:0 0 8px rgba(0,255,159,.3)}
+.skill-blocks{display:flex;gap:3px;margin-top:6px}
+.skill-block{width:18px;height:4px;border-radius:2px;background:#1A1A1A;transition:background .2s}
+.skill-block.filled{background:var(--accent);box-shadow:0 0 4px rgba(0,255,159,.3)}
+.skill-tooltip{position:absolute;bottom:calc(100% + 10px);left:0;background:var(--bg2);border:1px solid var(--gray-dim);padding:6px 12px;border-radius:6px;font-family:var(--font-mono);font-size:.62rem;color:var(--gray);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
+.skill-row:hover .skill-tooltip{opacity:1}
+
+/* PROJECTS */
+#projects{overflow:hidden}
+.projects-scroll{display:flex;gap:20px;overflow-x:auto;padding:8px 0 24px;scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x mandatory;margin-left:-8px;padding-left:8px}
+.projects-scroll::-webkit-scrollbar{display:none}
+.project-card{min-width:420px;height:260px;background:var(--bg2);border:1px solid var(--gray-dim);border-radius:16px;padding:24px;cursor:pointer;scroll-snap-align:start;transition:transform .3s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .3s;position:relative;overflow:hidden;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between}
+.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .35s}
+.project-card:hover{transform:scale(1.03);box-shadow:0 24px 60px rgba(0,0,0,.5);border-color:rgba(0,255,159,.2)}
+.project-card:hover::before{opacity:1}
+.project-tag{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:10px}
+.project-name{font-family:var(--font-head);font-size:1.15rem;font-weight:600;margin-bottom:8px}
+.project-desc{font-size:.8rem;color:var(--gray);line-height:1.65;flex:1}
+.project-flow{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:.6rem;color:var(--gray);margin-top:14px;flex-wrap:wrap}
+.flow-step{color:var(--white);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:3px}
+.flow-arrow{color:var(--accent)}
+.project-impact{font-family:var(--font-mono);font-size:.62rem;color:var(--gray);margin-top:10px}
+.project-impact span{color:var(--accent)}
+
+/* MODAL */
+#modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+#modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg2);border:1px solid var(--gray-dim);border-radius:16px;padding:40px;max-width:600px;width:90%;transform:translateY(20px);transition:transform .3s cubic-bezier(.23,1,.32,1);position:relative}
+#modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--gray);font-family:var(--font-mono);font-size:.7rem;cursor:pointer;letter-spacing:.1em;transition:color .2s}
+.modal-close:hover{color:var(--white)}
+.modal-tag{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:10px}
+.modal-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.modal-desc{font-size:.9rem;color:var(--gray);line-height:1.8;margin-bottom:24px}
+.modal-flow-title{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:var(--gray-mid);text-transform:uppercase;margin-bottom:12px}
+.modal-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.modal-flow-step{font-family:var(--font-mono);font-size:.72rem;background:rgba(0,255,159,.07);border:1px solid rgba(0,255,159,.2);color:var(--accent);padding:6px 14px;border-radius:6px}
+.modal-flow-arrow{color:var(--gray-dim)}
+.modal-impact{font-family:var(--font-mono);font-size:.75rem;color:var(--gray);margin-top:20px}
+.modal-impact span{color:var(--accent)}
+
+/* BL4CKDOT */
+#bl4ckdot{align-items:center;text-align:center}
+.bl4ck-inner{width:720px;max-width:100%}
+.bl4ck-brand{font-family:var(--font-head);font-size:clamp(3rem,6vw,4.5rem);font-weight:700;letter-spacing:-.04em;line-height:1}
+.bl4ck-brand span{color:var(--accent)}
+.bl4ck-tagline{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;color:var(--gray);margin:12px 0 20px;text-transform:uppercase}
+.bl4ck-desc{font-size:.92rem;color:var(--gray);line-height:1.85;margin-bottom:40px}
+.bl4ck-modules{display:flex;flex-direction:column;gap:2px;align-items:flex-start;margin:0 auto 32px;width:fit-content}
+.module-label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;color:var(--gray-mid);text-transform:uppercase;margin-bottom:12px;text-align:left}
+.module-item{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.8rem;color:var(--gray);padding:10px 20px;border:1px solid var(--gray-dim);border-radius:6px;min-width:240px;transition:border-color .25s,color .25s}
+.module-item::before{content:'→';color:var(--accent);font-size:.75rem}
+.module-item:hover{border-color:rgba(0,255,159,.2);color:var(--white)}
+.bl4ck-status{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
+.bl4ck-status::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);animation:blink 2s infinite}
+
+/* PHILOSOPHY */
+#philosophy{padding:0 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0}
+.philosophy-lines{display:flex;flex-direction:column;gap:56px;margin-top:48px}
+.phil-line{font-family:var(--font-head);font-size:48px;font-weight:700;letter-spacing:-.02em;color:#2A2A2A;opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.23,1,.32,1),transform .7s cubic-bezier(.23,1,.32,1),color .7s}
+.phil-line.visible{opacity:1;transform:translateY(0);color:var(--white)}
+.phil-line span{color:var(--accent)}
+
+/* WORKING ON */
+#working{gap:0}
+.working-nodes{margin-top:16px;position:relative;padding-left:28px}
+.working-nodes::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,var(--accent),#1A1A1A,transparent)}
+.wn-item{position:relative;padding-bottom:40px}
+.wn-item:last-child{padding-bottom:0}
+.wn-dot{position:absolute;left:-23px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:1.5px solid var(--gray-dim);transition:border-color .3s,box-shadow .3s}
+.wn-dot.active{border-color:var(--accent);box-shadow:0 0 10px rgba(0,255,159,.3)}
+.wn-dot.active::after{content:'';position:absolute;inset:2px;background:var(--accent);border-radius:50%}
+.wn-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.wn-title{font-family:var(--font-head);font-size:1rem;font-weight:600}
+.wn-badge{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:3px}
+.wn-badge.active{background:rgba(0,255,159,.1);color:var(--accent);border:1px solid rgba(0,255,159,.2)}
+.wn-badge.soon{background:rgba(255,255,255,.04);color:var(--gray-mid);border:1px solid var(--gray-dim)}
+.wn-desc{font-size:.85rem;color:var(--gray);line-height:1.7;max-width:480px}
+
+/* CONTACT */
+#contact{align-items:center;text-align:center;justify-content:center}
+.contact-cta{font-family:var(--font-head);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;letter-spacing:-.02em;max-width:520px;line-height:1.3;margin:16px auto 48px}
+.contact-cta span{color:var(--accent)}
+.contact-links{display:flex;gap:48px;align-items:center}
+.contact-link{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;cursor:pointer;transition:transform .25s cubic-bezier(.23,1,.32,1)}
+.contact-link:hover{transform:translateY(-4px)}
+.contact-link-label{font-family:var(--font-mono);font-size:18px;letter-spacing:.04em;color:var(--gray);transition:color .2s}
+.contact-link:hover .contact-link-label{color:var(--white)}
+.contact-link-icon{width:52px;height:52px;border-radius:10px;border:1px solid var(--gray-dim);background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;transition:border-color .25s,background .25s,box-shadow .25s}
+.contact-link:hover .contact-link-icon{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 0 20px rgba(0,255,159,.12)}
+.contact-link-icon svg{width:20px;height:20px;fill:none;stroke:var(--gray);stroke-width:1.5;transition:stroke .2s}
+.contact-link:hover .contact-link-icon svg{stroke:var(--accent)}
+
+/* FOOTER */
+footer{margin-left:var(--sidebar-w);padding:20px 120px;border-top:1px solid var(--gray-dim);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:.62rem;color:#383838;letter-spacing:.1em;position:relative;z-index:1}
+.footer-accent{color:var(--accent);margin-right:6px}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .3s ease-out,transform .3s ease-out}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gray-dim);border-radius:2px}
+
+@media(max-width:1000px){
+  main{margin-left:0}
+  #sidebar{display:none}
+  section{padding:80px 32px}
+  #home{grid-template-columns:1fr;padding:80px 32px;height:auto;max-height:none}
+  .hero-right{display:flex;height:auto;margin-top:36px}
+  .mascot-wrap{width:min(74vw,320px);height:min(74vw,320px)}
+  .hero-photo-circle{width:84%;height:84%}
+  .hero-name{font-size:48px}
+  .hero-tagline{font-size:22px}
+  footer{margin-left:0;padding:20px 32px}
+  .about-inner,.skills-inner{width:100%}
+  .contact-links{gap:24px}
+  .phil-line{font-size:32px}
+  #philosophy{padding:80px 32px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- MODAL -->
+<div id="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">[ ESC ] CLOSE</button>
+    <div id="modal-tag" class="modal-tag"></div>
+    <div id="modal-title" class="modal-title"></div>
+    <div id="modal-desc" class="modal-desc"></div>
+    <div class="modal-flow-title">Attack Flow</div>
+    <div id="modal-flow" class="modal-flow"></div>
+    <div id="modal-impact" class="modal-impact"></div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-logo"><span>DW</span></div>
+  <div class="sidebar-nav">
+    <div class="nav-item active" data-section="home" onclick="navTo('#home')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" data-section="about" onclick="navTo('#about')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+      <span class="nav-label">About</span>
+    </div>
+    <div class="nav-item" data-section="skills" onclick="navTo('#skills')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="nav-label">Skills</span>
+    </div>
+    <div class="nav-item" data-section="projects" onclick="navTo('#projects')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span class="nav-label">Projects</span>
+    </div>
+    <div class="nav-item" data-section="bl4ckdot" onclick="navTo('#bl4ckdot')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9"/></svg>
+      <span class="nav-label">Bl4ckdot</span>
+    </div>
+    <div class="nav-item" data-section="philosophy" onclick="navTo('#philosophy')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span class="nav-label">Philosophy</span>
+    </div>
+    <div class="nav-item" data-section="contact" onclick="navTo('#contact')">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 5 5l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
+      <span class="nav-label">Contact</span>
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="theme-toggle" id="themeToggle" onclick="this.classList.toggle('on')" title="Toggle"></div>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-left">
+    <div class="hero-status">STATUS: ACTIVE</div>
+    <h1 class="hero-name">Dwarak</h1>
+    <p class="hero-role">Cybersecurity Engineer &nbsp;/&nbsp; Bug Bounty Hunter &nbsp;/&nbsp; Startup Builder</p>
+    <div class="hero-tagline">"Breaking systems.<br>Building secure ones."</div>
+    <p class="hero-desc">I don't just learn security — I test, break, and rebuild systems to understand how they truly work.</p>
+    <div class="hero-sys">
+      <div class="sys-row"><span class="sys-key">STATUS&nbsp;&nbsp;</span><span>ACTIVE</span></div>
+      <div class="sys-row"><span class="sys-key">MODE&nbsp;&nbsp;&nbsp;&nbsp;</span><span>BUILDING</span></div>
+      <div class="sys-row"><span class="sys-key">FOCUS&nbsp;&nbsp;&nbsp;</span><span>BUG BOUNTY + SYSTEM DESIGN</span></div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="navTo('#projects')">View Projects</button>
+      <button class="btn-ghost" onclick="navTo('#contact')">Contact</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="mascot-wrap">
+      <div class="mascot-glow"></div>
+      <div class="mascot-ring"></div>
+      <div class="mascot-ring2"></div>
+      <div class="mascot-frame">
+        <div class="hero-photo-circle">
+          <img src="Gemini_Generated_Image_whjtnpwhjtnpwhjt.png" alt="Dwarak portrait">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="reveal">
+      <div class="sec-label">01 — About</div>
+      <h2 class="sec-title">The discipline<br>behind the <span style="color:var(--accent)">craft.</span></h2>
+    </div>
+    <div class="about-timeline">
+      <div class="about-tl-line"></div>
+      <div class="about-tl-item reveal" style="transition-delay:.1s">
+        <div class="about-tl-node"></div>
+        <div class="about-tl-content">
+          <div class="about-tl-title">● Curiosity</div>
+          <div class="about-tl-desc">Started taking systems apart before understanding how they worked. CTF competitions, local exploits, late-night rabbit holes into kernel internals and protocol specs.</div>
+        </div>
+      </div>
+      <div class="about-tl-item reveal" style="transition-delay:.2s">
+        <div class="about-tl-node"></div>
+        <div class="about-tl-content">
+          <div class="about-tl-title">● Confusion</div>
+          <div class="about-tl-desc">Realized that knowing how to break things doesn't automatically mean knowing how to build them right. Started bridging the gap — architecture, system design, product thinking.</div>
+        </div>
+      </div>
+      <div class="about-tl-item reveal" style="transition-delay:.3s">
+        <div class="about-tl-node"></div>
+        <div class="about-tl-content">
+          <div class="about-tl-title">● Clarity</div>
+          <div class="about-tl-desc">The intersection became clear: use offensive knowledge to build defensively strong systems. Bug bounty programs validated the model. Startups became the output.</div>
+        </div>
+      </div>
+      <div class="about-tl-item reveal" style="transition-delay:.4s">
+        <div class="about-tl-node"></div>
+        <div class="about-tl-content">
+          <div class="about-tl-title">● Now</div>
+          <div class="about-tl-desc">Building Bl4ckdot. Running active bounty campaigns. Shipping tools. The goal hasn't changed — understand systems completely, then make them unbreakable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-inner">
+    <div class="reveal">
+      <div class="sec-label">02 — Skills</div>
+      <h2 class="sec-title">System <span style="color:var(--accent)">Load</span></h2>
+    </div>
+    <div class="skills-list">
+      <div class="skill-row reveal" style="transition-delay:.05s">
+        <div class="skill-tooltip">OWASP Top 10, XSS, SQLi, IDOR, SSRF, RCE chains</div>
+        <div class="skill-header"><span class="skill-name">Web Exploitation</span><span class="skill-pct">92%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="92"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="9"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.1s">
+        <div class="skill-tooltip">REST/GraphQL security, auth bypass, rate limiting abuse</div>
+        <div class="skill-header"><span class="skill-name">API Security</span><span class="skill-pct">88%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="88"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="9"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.15s">
+        <div class="skill-tooltip">Static + dynamic analysis, behavioral detection, sandbox evasion</div>
+        <div class="skill-header"><span class="skill-name">Malware Analysis</span><span class="skill-pct">78%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="78"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="8"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.2s">
+        <div class="skill-tooltip">Wireshark, Suricata, deep packet inspection, protocol dissection</div>
+        <div class="skill-header"><span class="skill-name">Network Forensics</span><span class="skill-pct">82%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="82"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="8"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.25s">
+        <div class="skill-tooltip">Ghidra, IDA Pro, binary exploitation, CTF-grade reversing</div>
+        <div class="skill-header"><span class="skill-name">Reverse Engineering</span><span class="skill-pct">70%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="7"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.3s">
+        <div class="skill-tooltip">Python, Node.js, React, FastAPI, Docker, PostgreSQL</div>
+        <div class="skill-header"><span class="skill-name">Full-Stack Development</span><span class="skill-pct">85%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="85"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="9"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.35s">
+        <div class="skill-tooltip">Shodan, Maltego, recon-ng, Google dork chaining</div>
+        <div class="skill-header"><span class="skill-name">OSINT</span><span class="skill-pct">80%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="80"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="8"></div>
+      </div>
+      <div class="skill-row reveal" style="transition-delay:.4s">
+        <div class="skill-tooltip">Firmware extraction, UART/JTAG, protocol attacks, embedded systems</div>
+        <div class="skill-header"><span class="skill-name">IoT Security</span><span class="skill-pct">72%</span></div>
+        <div class="skill-track"><div class="skill-fill" data-width="72"></div></div>
+        <div class="skill-blocks" data-blocks="10" data-filled="7"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <div class="sec-label">03 — Projects</div>
+    <h2 class="sec-title">Attack <span style="color:var(--accent)">Surface</span></h2>
+  </div>
+  <div class="projects-scroll reveal" style="transition-delay:.15s">
+    <div class="project-card" onclick="openModal(0)">
+      <div>
+        <div class="project-tag">Bug Bounty</div>
+        <div class="project-name">OAuth Token Hijack</div>
+        <div class="project-desc">Chained IDOR + open redirect to steal OAuth tokens on a Fortune 500 target. Full account takeover across multiple user tiers.</div>
+      </div>
+      <div>
+        <div class="project-flow"><span class="flow-step">Recon</span><span class="flow-arrow">→</span><span class="flow-step">IDOR</span><span class="flow-arrow">→</span><span class="flow-step">Redirect</span><span class="flow-arrow">→</span><span class="flow-step">Token Theft</span></div>
+        <div class="project-impact">Impact: <span>Full Account Takeover</span></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openModal(1)">
+      <div>
+        <div class="project-tag">Research</div>
+        <div class="project-name">API Rate Limit Bypass</div>
+        <div class="project-desc">Multi-layer rate limit bypass using HTTP header manipulation and IP rotation on a widely-used SaaS authentication platform.</div>
+      </div>
+      <div>
+        <div class="project-flow"><span class="flow-step">Fingerprint</span><span class="flow-arrow">→</span><span class="flow-step">Header Fuzz</span><span class="flow-arrow">→</span><span class="flow-step">Bypass</span><span class="flow-arrow">→</span><span class="flow-step">Report</span></div>
+        <div class="project-impact">Impact: <span>Auth Bypass + Enumeration</span></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openModal(2)">
+      <div>
+        <div class="project-tag">Tool — Open Source</div>
+        <div class="project-name">Bl4ckScan</div>
+        <div class="project-desc">Custom recon framework for automated subdomain discovery, port scanning, and vulnerability fingerprinting. Built for speed and low noise.</div>
+      </div>
+      <div>
+        <div class="project-flow"><span class="flow-step">DNS Enum</span><span class="flow-arrow">→</span><span class="flow-step">Port Scan</span><span class="flow-arrow">→</span><span class="flow-step">Fingerprint</span><span class="flow-arrow">→</span><span class="flow-step">Report</span></div>
+        <div class="project-impact">Impact: <span>10x Recon Speed</span></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openModal(3)">
+      <div>
+        <div class="project-tag">CTF / IoT Research</div>
+        <div class="project-name">Firmware Reverse Eng.</div>
+        <div class="project-desc">Extracted IoT device firmware via UART. Discovered hardcoded credentials and undocumented debug interface exposing full admin shell.</div>
+      </div>
+      <div>
+        <div class="project-flow"><span class="flow-step">UART</span><span class="flow-arrow">→</span><span class="flow-step">Binwalk</span><span class="flow-arrow">→</span><span class="flow-step">Ghidra</span><span class="flow-arrow">→</span><span class="flow-step">Creds Found</span></div>
+        <div class="project-impact">Impact: <span>Hardcoded Admin Credentials</span></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openModal(4)">
+      <div>
+        <div class="project-tag">Startup</div>
+        <div class="project-name">Bl4ckdot Platform</div>
+        <div class="project-desc">Security-first startup building micro-LLMs for threat detection, IoT anomaly analysis, and automated vulnerability reporting.</div>
+      </div>
+      <div>
+        <div class="project-flow"><span class="flow-step">Research</span><span class="flow-arrow">→</span><span class="flow-step">Prototype</span><span class="flow-arrow">→</span><span class="flow-step">Ship</span></div>
+        <div class="project-impact">Impact: <span>Autonomous Security Tooling</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BL4CKDOT -->
+<section id="bl4ckdot">
+  <div class="bl4ck-inner">
+    <div class="reveal">
+      <div class="sec-label" style="justify-content:center">04 — Startup</div>
+      <div class="bl4ck-brand">BL4CK<span>.</span>DOT</div>
+      <div class="bl4ck-tagline">Security × Intelligence × Infrastructure</div>
+      <p class="bl4ck-desc">Not a consultancy. Not an agency. A product company built around autonomous security tooling — micro-LLMs trained on attack patterns, IoT anomaly detection pipelines, and a unified threat intelligence layer.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="module-label">[ ACTIVE MODULES ]</div>
+      <div class="bl4ck-modules">
+        <div class="module-item">IoT Systems</div>
+        <div class="module-item">AI Tools</div>
+        <div class="module-item">Security Tools</div>
+      </div>
+    </div>
+    <div class="bl4ck-status reveal" style="transition-delay:.25s">STATUS: BUILDING</div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="reveal">
+    <div class="sec-label" style="justify-content:center">05 — Philosophy</div>
+  </div>
+  <div class="philosophy-lines">
+    <div class="phil-line">LEARN BY <span>BREAKING.</span></div>
+    <div class="phil-line">BUILD WITH <span>INTENT.</span></div>
+    <div class="phil-line">SHIP WITH <span>DISCIPLINE.</span></div>
+    <div class="phil-line">SECURITY IS NOT AN <span>AFTERTHOUGHT.</span></div>
+  </div>
+</section>
+
+<!-- WORKING ON -->
+<section id="working">
+  <div class="reveal">
+    <div class="sec-label">06 — Currently</div>
+    <h2 class="sec-title">What I'm <span style="color:var(--accent)">working on</span></h2>
+  </div>
+  <div class="working-nodes">
+    <div class="wn-item reveal" style="transition-delay:.1s">
+      <div class="wn-dot active"></div>
+      <div class="wn-header"><span class="wn-title">Bug Bounty Workflow</span><span class="wn-badge active">ACTIVE</span></div>
+      <div class="wn-desc">Running active campaigns on H1/Bugcrowd. Current focus on API authentication flows and mobile backend endpoints with deep business logic flaws.</div>
+    </div>
+    <div class="wn-item reveal" style="transition-delay:.2s">
+      <div class="wn-dot active"></div>
+      <div class="wn-header"><span class="wn-title">Automation Scripts</span><span class="wn-badge active">ACTIVE</span></div>
+      <div class="wn-desc">Building a recon automation pipeline — subdomain enumeration, port scanning, and screenshot capture in a single async workflow. Python + asyncio.</div>
+    </div>
+    <div class="wn-item reveal" style="transition-delay:.3s">
+      <div class="wn-dot"></div>
+      <div class="wn-header"><span class="wn-title">Backend Depth</span><span class="wn-badge soon">IN PROGRESS</span></div>
+      <div class="wn-desc">Going deeper into distributed systems — consensus algorithms, service mesh security, and zero-trust architecture patterns.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <div class="sec-label" style="justify-content:center">07 — Contact</div>
+    <div class="contact-cta">Let's <span>build</span> or <span>break</span> something together.</div>
+  </div>
+  <div class="contact-links reveal" style="transition-delay:.2s">
+    <a href="https://github.com/" target="_blank" class="contact-link">
+      <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
+      <span class="contact-link-label">github</span>
+    </a>
+    <a href="https://linkedin.com/" target="_blank" class="contact-link">
+      <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+      <span class="contact-link-label">linkedin</span>
+    </a>
+    <a href="mailto:dwarak@bl4ckdot.com" class="contact-link">
+      <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <span class="contact-link-label">email</span>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>DWARAK © 2025</span>
+  <span style="font-family:var(--font-mono);letter-spacing:.14em">BL4CKDOT</span>
+  <span><span class="footer-accent">■</span> SYSTEM ONLINE</span>
+</footer>
+
+<script>
+const projects=[
+  {tag:'Bug Bounty',title:'OAuth Token Hijack',desc:'Chained an IDOR vulnerability with an open redirect to intercept OAuth bearer tokens on a Fortune 500 target. The exploit chain resulted in full account takeover across multiple user privilege tiers, with no interaction required post-initial access.',flow:['Recon','IDOR Discovery','Redirect Chain','Token Intercept','Account Takeover'],impact:'Full Account Takeover — Critical Severity'},
+  {tag:'Research',title:'API Rate Limit Bypass',desc:'Discovered a multi-layer rate limit bypass using strategic HTTP header manipulation (X-Forwarded-For, X-Real-IP, CF-Connecting-IP) combined with IP rotation in a widely-used SaaS authentication API, enabling unrestricted credential stuffing.',flow:['Endpoint Fingerprint','Header Fuzzing','IP Rotation','Bypass Confirmed','CVE Report'],impact:'Auth Bypass enabling credential stuffing at scale'},
+  {tag:'Tool — Open Source',title:'Bl4ckScan v1.0',desc:'A modular, async reconnaissance framework in Python. Performs subdomain enumeration, port scanning, service fingerprinting, and generates structured JSON/HTML reports. Built for bug bounty hunters who need high-signal, low-noise output.',flow:['DNS Enumeration','Port Scan','Service ID','Fingerprint','JSON Report'],impact:'10x recon speed vs manual process — plugin support'},
+  {tag:'CTF / IoT Research',title:'Firmware Reverse Engineering',desc:'Extracted embedded Linux firmware from a consumer IoT router using UART access. Binwalk-based filesystem extraction revealed hardcoded root credentials, undocumented telnet backdoor, and a debug interface exposing full admin shell over local network.',flow:['UART Access','Binwalk Extract','Filesystem Analysis','Ghidra RE','Credentials Found'],impact:'Hardcoded admin credentials + debug backdoor exposed'},
+  {tag:'Startup',title:'Bl4ckdot Platform',desc:'Security-first product company building autonomous threat intelligence tooling. Core products include micro-LLMs fine-tuned on CVE databases and attack pattern libraries for threat detection, IoT anomaly detection pipelines, and a unified security intelligence dashboard.',flow:['Research','Architecture','Prototype','Ship','Iterate'],impact:'Autonomous security tooling for the next generation'}
+];
+
+function openModal(i){
+  const p=projects[i];
+  document.getElementById('modal-tag').textContent=p.tag;
+  document.getElementById('modal-title').textContent=p.title;
+  document.getElementById('modal-desc').textContent=p.desc;
+  document.getElementById('modal-flow').innerHTML=p.flow.map((s,j)=>`<span class="modal-flow-step">${s}</span>`+(j<p.flow.length-1?`<span class="modal-flow-arrow">→</span>`:'')).join('');
+  document.getElementById('modal-impact').innerHTML=`Impact: <span>${p.impact}</span>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
+});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.nav-item,.project-card,.contact-link,.module-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+function navTo(sel){const el=document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+// CANVAS BG
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let cols,drops;
+function initCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;cols=Math.floor(canvas.width/22);drops=Array(cols).fill(0).map(()=>Math.random()*-80)}
+const chars='01アイウエ{}[]<>/\\;:ABCDEF09';
+function drawBg(){
+  ctx.fillStyle='rgba(10,10,10,.045)';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#00FF9F';ctx.font='11px JetBrains Mono,monospace';
+  for(let i=0;i<cols;i++){
+    if(Math.random()>.975){ctx.globalAlpha=Math.random()*.07+.02;ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*22,drops[i]*11);ctx.globalAlpha=1}
+    drops[i]++;if(drops[i]*11>canvas.height&&Math.random()>.975)drops[i]=0;
+  }
+}
+initCanvas();window.addEventListener('resize',initCanvas);setInterval(drawBg,90);
+
+// ACTIVE NAV
+const allSec=document.querySelectorAll('section[id]'),navItems=document.querySelectorAll('.nav-item');
+function updateNav(){
+  let cur='';
+  allSec.forEach(s=>{if(s.getBoundingClientRect().top<window.innerHeight*.5)cur=s.id});
+  navItems.forEach(n=>n.classList.toggle('active',n.dataset.section===cur));
+}
+
+// REVEAL + SKILL BARS
+const revealEls=document.querySelectorAll('.reveal'),philLines=document.querySelectorAll('.phil-line');
+function handleScroll(){
+  updateNav();
+  revealEls.forEach(el=>{if(el.getBoundingClientRect().top<window.innerHeight*.9)el.classList.add('visible')});
+  philLines.forEach((el,i)=>{if(el.getBoundingClientRect().top<window.innerHeight*.78)setTimeout(()=>el.classList.add('visible'),i*180)});
+  document.querySelectorAll('.skill-fill:not(.animated)').forEach(fill=>{
+    if(fill.getBoundingClientRect().top<window.innerHeight*.92){
+      fill.classList.add('animated');fill.style.width=fill.dataset.width+'%';
+      const b=fill.closest('.skill-row').querySelector('.skill-blocks');
+      if(b&&!b.dataset.built){
+        b.dataset.built='1';
+        const total=parseInt(b.dataset.blocks||10),filled=parseInt(b.dataset.filled||8);
+        for(let i=0;i<total;i++){const d=document.createElement('div');d.className='skill-block'+(i<filled?' filled':'');b.appendChild(d)}
+      }
+    }
+  });
+}
+window.addEventListener('scroll',handleScroll,{passive:true});
+handleScroll();
+
+// MASCOT PARALLAX
+const mf=document.querySelector('.mascot-frame');
+window.addEventListener('scroll',()=>{if(mf)mf.style.transform=`translateY(${-window.scrollY*.05}px)`},{passive:true});
+</script>
+</body>
+</html>
