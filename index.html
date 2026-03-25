@@ -774,10 +774,38 @@ footer{
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--gray-dim);border-radius:2px}
 
+/* ── MOBILE THEME TOGGLE ── */
+.mobile-theme-toggle{
+  position:fixed;top:16px;right:16px;z-index:260;
+  width:44px;height:44px;display:none;
+  align-items:center;justify-content:center;
+  background:var(--sidebar-bg);backdrop-filter:blur(18px);
+  border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;
+  transition:background .35s,border-color .35s,box-shadow .35s;
+  box-shadow:0 8px 24px rgba(0,0,0,.15);
+}
+.mobile-theme-toggle:hover{background:var(--surface);border-color:rgba(var(--accent-rgb),.3)}
+.mobile-theme-toggle:active{transform:scale(.95)}
+.theme-icon{
+  width:18px;height:18px;
+  stroke:var(--text);stroke-width:1.5;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  position:absolute;
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+  will-change:transform,opacity;
+}
+.sun-icon{opacity:1;transform:rotate(0deg) scale(1)}
+.moon-icon{opacity:0;transform:rotate(-180deg) scale(0.8)}
+/* Light theme: show moon, hide sun */
+[data-theme="light"] .sun-icon{opacity:0;transform:rotate(180deg) scale(0.8)}
+[data-theme="light"] .moon-icon{opacity:1;transform:rotate(0deg) scale(1)}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1020px){
   main{margin-left:0;margin-right:0}
   #sidebar,#social-bar{display:none}
+  .mobile-theme-toggle{display:flex}
   section{padding:70px 28px}
   #home{grid-template-columns:1fr;padding:70px 28px;height:auto;max-height:none}
   .hero-right{height:auto;margin-top:32px}
@@ -855,6 +883,12 @@ footer{
   <a class="soc-link" href="https://hackerrank.com/" target="_blank" rel="noopener" aria-label="HackerRank"><svg class="si" viewBox="0 0 24 24"><path d="M12 0c1.285 0 9.75 4.886 10.392 6 .645 1.115.645 10.885 0 12S13.287 24 12 24C10.715 24 2.25 19.114 1.608 18 .963 16.886.963 7.116 1.608 6 2.252 4.886 10.715 0 12 0zm2.205 6.015h-1.92v1.166l-.11-.064-1.74-1.014a.235.235 0 0 0-.24.03.24.24 0 0 0-.093.19v3.7h1.92V8.856l.11.063 1.74 1.015a.24.24 0 0 0 .333-.22V6.015zm-5.555 5.984a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm6.7 0a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-3.34.48a.48.48 0 1 0 0 .96.48.48 0 0 0 0-.96zm0 2.64c-.888 0-1.59.448-1.918 1.08h3.836c-.329-.632-1.03-1.08-1.918-1.08z"/></svg><span class="soc-tip">HackerRank</span></a>
   <a class="soc-link" href="mailto:dwaraka1805@yahoo.com" aria-label="Email"><svg class="si" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="soc-tip">Email</span></a>
 </aside>
+
+<!-- ── MOBILE THEME TOGGLE ── -->
+<div id="mobileThemeToggle" class="mobile-theme-toggle" role="button" tabindex="0" aria-label="Toggle theme">
+  <svg class="theme-icon sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  <svg class="theme-icon moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</div>
 
 <main>
 
@@ -1075,6 +1109,15 @@ if (tog) {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
   });
 } else { syncPortrait(root.getAttribute('data-theme') || 'dark'); }
+
+/* Mobile theme toggle */
+const mobTog = document.getElementById('mobileThemeToggle');
+if (mobTog) {
+  mobTog.addEventListener('click', toggleTheme);
+  mobTog.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
+  });
+}
 
 /* ══════════════════════════
    CURSOR
