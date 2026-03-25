@@ -75,7 +75,7 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--white);font-family:var(--font-body);overflow-x:hidden;cursor:none;min-width:320px}
 
 /* CURSOR */
-#cursor{position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
+#cursor{display:none}
 #cursor-ring{position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid rgba(var(--accent-rgb),.3);border-radius:50%;pointer-events:none;transition:transform .35s cubic-bezier(.23,1,.32,1),width .25s,height .25s,border-color .25s;transform:translate(-50%,-50%)}
 body.hovering #cursor-ring{width:52px;height:52px;border-color:var(--accent)}
 body.hovering #cursor{transform:translate(-50%,-50%) scale(.4)}
@@ -266,8 +266,8 @@ footer{margin-left:var(--sidebar-w);padding:20px 120px;border-top:1px solid var(
 .footer-accent{color:var(--accent);margin-right:6px}
 
 /* REVEAL */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .3s ease-out,transform .3s ease-out}
-.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal{opacity:0;transform:translateY(-18px);filter:blur(6px);transition:opacity .42s ease-out,transform .56s cubic-bezier(.22,1,.36,1),filter .42s ease-out}
+.reveal.visible{opacity:1;transform:translateY(0);filter:blur(0)}
 
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:3px}
@@ -382,28 +382,28 @@ footer{margin-left:var(--sidebar-w);padding:20px 120px;border-top:1px solid var(
       <div class="about-tl-item reveal" style="transition-delay:.1s">
         <div class="about-tl-node"></div>
         <div class="about-tl-content">
-          <div class="about-tl-title">● Curiosity</div>
+          <div class="about-tl-title">Curiosity</div>
           <div class="about-tl-desc">Started taking systems apart before understanding how they worked. CTF competitions, local exploits, late-night rabbit holes into kernel internals and protocol specs.</div>
         </div>
       </div>
       <div class="about-tl-item reveal" style="transition-delay:.2s">
         <div class="about-tl-node"></div>
         <div class="about-tl-content">
-          <div class="about-tl-title">● Confusion</div>
+          <div class="about-tl-title">Confusion</div>
           <div class="about-tl-desc">Realized that knowing how to break things doesn't automatically mean knowing how to build them right. Started bridging the gap — architecture, system design, product thinking.</div>
         </div>
       </div>
       <div class="about-tl-item reveal" style="transition-delay:.3s">
         <div class="about-tl-node"></div>
         <div class="about-tl-content">
-          <div class="about-tl-title">● Clarity</div>
+          <div class="about-tl-title">Clarity</div>
           <div class="about-tl-desc">The intersection became clear: use offensive knowledge to build defensively strong systems. Bug bounty programs validated the model. Startups became the output.</div>
         </div>
       </div>
       <div class="about-tl-item reveal" style="transition-delay:.4s">
         <div class="about-tl-node"></div>
         <div class="about-tl-content">
-          <div class="about-tl-title">● Now</div>
+          <div class="about-tl-title">Now</div>
           <div class="about-tl-desc">Building Bl4ckdot. Running active bounty campaigns. Shipping tools. The goal hasn't changed — understand systems completely, then make them unbreakable.</div>
         </div>
       </div>
