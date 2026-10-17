@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <!-- Lenis smooth scroll -->
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
 <script>
@@ -441,160 +444,7 @@ section{
 }
 .sk-row:hover .sk-tip{opacity:1}
 
-/* ══════════════════════════════════════════════
-   PROJECTS — VERTICAL PIN + REVEAL FLOW
-══════════════════════════════════════════════ */
-#projects{
-  padding:0;min-height:unset;
-  display:block;position:relative;
-}
-.proj-pin-wrap{
-  /* height set by JS based on card count */
-  position:relative;
-}
-.proj-sticky{
-  position:sticky;top:0;
-  height:100vh;overflow:hidden;
-  display:flex;align-items:center;
-}
-.proj-inner{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:80px;align-items:center;
-  width:100%;
-  padding:0 100px;
-}
 
-/* LEFT — progress indicator + meta */
-.proj-left{position:relative;padding-left:32px}
-.proj-progress-line{
-  position:absolute;left:0;top:0;bottom:0;
-  width:1px;background:var(--track);
-}
-.proj-node{
-  position:absolute;left:-5px;
-  width:10px;height:10px;border-radius:50%;
-  background:var(--bg);border:1.5px solid var(--gray-mid);
-  transition:border-color .3s,box-shadow .3s,background .3s;
-}
-.proj-node.active{
-  border-color:var(--accent);
-  box-shadow:0 0 10px rgba(var(--accent-rgb),.35);
-}
-.proj-node.active::after{
-  content:'';position:absolute;inset:2px;
-  background:var(--accent);border-radius:50%;
-}
-.proj-section-label{
-  font-family:var(--font-mono);font-size:.58rem;
-  letter-spacing:.22em;color:var(--accent);
-  text-transform:uppercase;margin-bottom:12px;
-  display:flex;align-items:center;gap:8px;
-}
-.proj-section-label::after{content:'';width:36px;height:1px;background:var(--accent);opacity:.3}
-.proj-section-title{
-  font-family:var(--font-head);
-  font-size:clamp(1.8rem,3vw,2.7rem);
-  font-weight:700;letter-spacing:-.03em;
-  line-height:1.1;margin-bottom:32px;
-  color:var(--text);
-}
-.proj-counter{
-  font-family:var(--font-mono);font-size:.62rem;
-  letter-spacing:.1em;color:var(--gray-mid);
-  margin-top:24px;
-}
-.proj-counter span{color:var(--accent)}
-.proj-hint{
-  font-family:var(--font-mono);font-size:.58rem;
-  letter-spacing:.1em;color:var(--gray-mid);
-  text-transform:uppercase;margin-top:12px;
-  display:flex;align-items:center;gap:6px;
-  opacity:.6;
-}
-.proj-hint::before{content:'';width:3px;height:3px;background:var(--accent);border-radius:50%;animation:blink 2s infinite}
-
-/* RIGHT — animated card stack */
-.proj-right{
-  position:relative;
-  height:320px;
-  overflow:hidden;
-}
-.proj-card{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;justify-content:flex-start;
-  padding:32px 36px;
-  border:1px solid var(--card-border);
-  border-radius:16px;
-  background:var(--card-bg);
-  /* initial hidden state */
-  opacity:0;
-  transform:translateY(60px);
-  clip-path:inset(20% 0 20% 0 round 16px);
-  transition:
-    opacity .55s var(--ease),
-    transform .6s var(--ease),
-    clip-path .6s var(--ease),
-    border-color .3s;
-  will-change:transform,opacity,clip-path;
-  pointer-events:none;
-}
-.proj-card.active{
-  opacity:1;
-  transform:translateY(0);
-  clip-path:inset(0% 0 0% 0 round 16px);
-  pointer-events:auto;
-  border-color:rgba(var(--accent-rgb),.18);
-}
-.proj-card.exit-up{
-  opacity:0;
-  transform:translateY(-50px);
-  clip-path:inset(20% 0 0% 0 round 16px);
-}
-.proj-card.enter-below{
-  opacity:0;
-  transform:translateY(60px);
-  clip-path:inset(20% 0 20% 0 round 16px);
-}
-.pc-tag{
-  font-family:var(--font-mono);font-size:.56rem;
-  letter-spacing:.18em;color:var(--accent);
-  text-transform:uppercase;margin-bottom:10px;
-}
-.pc-name{
-  font-family:var(--font-head);font-size:1.2rem;
-  font-weight:700;margin-bottom:10px;color:var(--text);
-}
-.pc-desc{
-  font-size:.85rem;color:var(--muted);
-  line-height:1.7;margin-bottom:18px;
-  max-width:420px;
-}
-.pc-flow{
-  display:flex;align-items:center;gap:6px;
-  flex-wrap:wrap;margin-bottom:12px;
-}
-.pc-step{
-  font-family:var(--font-mono);font-size:.58rem;
-  background:var(--accent-soft);
-  border:1px solid rgba(var(--accent-rgb),.14);
-  color:var(--accent);padding:3px 8px;border-radius:3px;
-}
-.pc-arrow{color:var(--gray-mid);font-size:.65rem}
-.pc-impact{
-  font-family:var(--font-mono);font-size:.62rem;
-  color:var(--muted);
-}
-.pc-impact span{color:var(--accent)}
-.pc-link{
-  margin-top:14px;display:inline-flex;align-items:center;gap:6px;
-  font-family:var(--font-mono);font-size:.62rem;
-  letter-spacing:.08em;color:var(--accent);
-  text-decoration:none;opacity:.7;
-  transition:opacity .2s,transform .2s var(--ease);
-  will-change:transform;
-}
-.pc-link:hover{opacity:1;transform:translateX(3px)}
 
 /* ── BL4CKDOT ── */
 #bl4ckdot{align-items:center;text-align:center}
@@ -731,43 +581,7 @@ footer{
 }
 .fa{color:var(--accent);margin-right:5px}
 
-/* ── GITHUB LOADING STATES ── */
-.gh-load,.gh-err,.gh-empty-msg{
-  font-family:var(--font-mono);font-size:.68rem;
-  letter-spacing:.08em;color:var(--muted);
-  text-transform:uppercase;
-}
-.gh-err{color:#ff8080;text-transform:none}
-.gh-retry{
-  margin-top:10px;height:32px;padding:0 12px;
-  border-radius:7px;border:1px solid var(--border);
-  background:transparent;color:var(--muted);
-  font-family:var(--font-mono);font-size:.62rem;
-  letter-spacing:.08em;text-transform:uppercase;
-  cursor:pointer;transition:border-color .2s,color .2s;
-}
-.gh-retry:hover{border-color:var(--accent);color:var(--text)}
-.gh-sk{
-  height:280px;padding:32px 36px;border-radius:16px;
-  border:1px solid var(--card-border);background:var(--card-bg);
-}
-.gh-skl{
-  height:8px;border-radius:999px;margin-bottom:2px;
-  background:linear-gradient(90deg,
-    rgba(255,255,255,.03),
-    rgba(255,255,255,.08),
-    rgba(255,255,255,.03));
-  background-size:200% 100%;
-  animation:skp 1.4s linear infinite;
-}
-[data-theme="light"] .gh-skl{
-  background:linear-gradient(90deg,
-    rgba(0,0,0,.025),rgba(0,0,0,.07),rgba(0,0,0,.025));
-  background-size:200% 100%;
-}
-.gh-skl.w6{width:58%}.gh-skl.w9{width:88%;margin-top:14px}
-.gh-skl.w7{width:70%;margin-top:10px}.gh-skl.w5{width:48%;margin-top:26px}
-@keyframes skp{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:2px}
@@ -801,6 +615,462 @@ footer{
 [data-theme="light"] .sun-icon{opacity:0;transform:rotate(180deg) scale(0.8)}
 [data-theme="light"] .moon-icon{opacity:1;transform:rotate(0deg) scale(1)}
 
+/* ══════════════════════════════════════════════
+   GITHUB SHOWCASE SECTION
+══════════════════════════════════════════════ */
+#github{
+  padding:0;min-height:unset;
+  display:block;position:relative;
+  overflow:hidden;
+}
+
+/* ── Outer pin wrapper — scroll height set by JS ── */
+.gh-pin-outer{
+  position:relative;
+}
+.gh-pin-sticky{
+  position:sticky;top:0;
+  height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* ── INTRO HEADER (above the track) ── */
+.gh-intro{
+  position:absolute;top:0;left:0;right:0;
+  z-index:10;padding:44px 100px 0;
+  pointer-events:none;
+}
+.gh-intro-inner{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(var(--accent-rgb),.12);
+  padding-bottom:20px;
+}
+.gh-intro-left{}
+.gh-intro-label{
+  font-family:var(--font-mono);font-size:.58rem;
+  letter-spacing:.22em;color:var(--accent);
+  text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.gh-intro-label::after{content:'';width:40px;height:1px;background:var(--accent);opacity:.3}
+.gh-intro-title{
+  font-family:var(--font-head);
+  font-size:clamp(2rem,3.6vw,3.2rem);
+  font-weight:700;letter-spacing:-.03em;line-height:1;
+  color:var(--text);
+}
+.gh-intro-title em{
+  font-style:normal;color:var(--accent);
+  position:relative;
+}
+.gh-intro-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+}
+.gh-scroll-hint{
+  font-family:var(--font-mono);font-size:.58rem;
+  letter-spacing:.14em;color:var(--gray-mid);
+  text-transform:uppercase;display:flex;align-items:center;gap:8px;
+  opacity:.6;
+}
+.gh-scroll-arrow{
+  display:flex;gap:3px;align-items:center;
+}
+.gh-scroll-arrow span{
+  display:block;width:6px;height:1px;
+  background:var(--accent);opacity:.5;
+  animation:arrowPulse 1.6s ease-in-out infinite;
+}
+.gh-scroll-arrow span:nth-child(2){animation-delay:.2s}
+.gh-scroll-arrow span:nth-child(3){animation-delay:.4s}
+@keyframes arrowPulse{
+  0%,100%{opacity:.2;transform:scaleX(1)}
+  50%{opacity:1;transform:scaleX(1.6)}
+}
+.gh-progress-bar{
+  height:2px;width:180px;
+  background:var(--track);border-radius:2px;overflow:hidden;
+}
+.gh-progress-fill{
+  height:100%;background:var(--accent);
+  border-radius:2px;width:0%;
+  transition:width .12s linear;
+  box-shadow:0 0 8px var(--accent);
+}
+
+/* ── PARALLAX LAYERS (decorative) ── */
+.gh-parallax-layer{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+}
+.gh-grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(to right,rgba(var(--accent-rgb),.025) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(var(--accent-rgb),.025) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,black,transparent);
+}
+.gh-glow-orb{
+  position:absolute;pointer-events:none;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.08;
+  animation:orbDrift 8s ease-in-out infinite;
+}
+.gh-glow-orb.orb1{
+  width:500px;height:500px;
+  background:var(--accent);
+  top:-100px;left:-100px;
+  animation-delay:0s;
+}
+.gh-glow-orb.orb2{
+  width:400px;height:400px;
+  background:#6B2FFF;
+  bottom:-100px;right:10%;
+  animation-delay:-4s;
+}
+.gh-glow-orb.orb3{
+  width:300px;height:300px;
+  background:#FF2F7E;
+  top:20%;right:-80px;
+  animation-delay:-2s;
+}
+@keyframes orbDrift{
+  0%,100%{transform:translate(0,0)}
+  33%{transform:translate(20px,-15px)}
+  66%{transform:translate(-10px,20px)}
+}
+
+/* ── HORIZONTAL TRACK ── */
+.gh-track-wrap{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  display:flex;align-items:center;
+  z-index:3;
+  padding-top:140px; /* below intro header */
+}
+.gh-track{
+  display:flex;gap:32px;
+  padding:0 100px;
+  will-change:transform;
+  align-items:stretch;
+  height:calc(100vh - 200px);
+}
+
+/* ── FEATURED CARD ── */
+.gh-featured{
+  flex-shrink:0;width:520px;
+  position:relative;overflow:hidden;
+  border-radius:20px;
+  background:linear-gradient(135deg,
+    rgba(var(--accent-rgb),.08) 0%,
+    rgba(107,47,255,.06) 50%,
+    rgba(0,0,0,0) 100%);
+  border:1px solid rgba(var(--accent-rgb),.25);
+  padding:0;
+  display:flex;flex-direction:column;
+  cursor:pointer;
+  transition:border-color .3s,box-shadow .3s;
+  box-shadow:0 0 0 0 rgba(var(--accent-rgb),0);
+}
+.gh-featured:hover{
+  border-color:rgba(var(--accent-rgb),.5);
+  box-shadow:0 0 40px rgba(var(--accent-rgb),.1),inset 0 0 40px rgba(var(--accent-rgb),.03);
+}
+.gh-featured::before{
+  content:'';
+  position:absolute;top:-1px;left:32px;right:32px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.8;
+}
+.gh-featured-badge{
+  font-family:var(--font-mono);font-size:.52rem;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.gh-featured-badge::before{
+  content:'';
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+  animation:blink 2s infinite;
+}
+.gh-featured-name{
+  font-family:var(--font-head);
+  font-size:clamp(1.4rem,2.2vw,1.9rem);
+  font-weight:700;letter-spacing:-.03em;
+  color:var(--text);line-height:1.15;margin-bottom:14px;
+}
+.gh-featured-desc{
+  font-size:.88rem;color:var(--muted);line-height:1.8;
+  flex-grow:1;margin-bottom:24px;
+}
+.gh-featured-meta{
+  display:flex;gap:20px;flex-wrap:wrap;
+  margin-bottom:22px;
+}
+.gh-meta-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:var(--font-mono);font-size:.62rem;
+  color:var(--muted);
+}
+.gh-lang-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--accent);
+  flex-shrink:0;
+}
+.gh-featured-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:.66rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:#000;background:var(--accent);
+  padding:10px 20px;border-radius:8px;
+  text-decoration:none;width:fit-content;
+  transition:opacity .2s,box-shadow .2s,transform .2s var(--ease);
+  will-change:transform;
+}
+.gh-featured-link:hover{
+  opacity:.9;
+  box-shadow:0 0 20px var(--accent-mid);
+  transform:translateY(-2px);
+}
+.gh-featured-corner{
+  position:absolute;top:20px;right:20px;
+  width:60px;height:60px;opacity:.06;
+}
+.gh-featured-corner svg{
+  width:100%;height:100%;
+  stroke:var(--accent);fill:none;stroke-width:1;
+}
+
+/* ── PREVIEW IMAGE (featured + repo cards) ── */
+.gh-preview{
+  width:100%;height:200px;
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+  border-radius:20px 20px 0 0;
+}
+.gh-preview img{
+  width:100%;height:100%;object-fit:cover;object-position:top left;
+  display:block;
+  transition:transform .55s var(--ease),filter .35s;
+  filter:brightness(.85) saturate(1.1);
+}
+.gh-featured:hover .gh-preview img{transform:scale(1.04);filter:brightness(.95) saturate(1.2)}
+.gh-preview-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,
+    rgba(8,12,20,0) 40%,
+    rgba(8,12,20,.95) 100%);
+  pointer-events:none;
+}
+.gh-preview-cat{
+  position:absolute;top:12px;left:14px;
+  font-family:var(--font-mono);font-size:.5rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);background:rgba(8,12,20,.7);
+  border:1px solid rgba(var(--accent-rgb),.3);
+  backdrop-filter:blur(8px);
+  padding:3px 9px;border-radius:3px;
+  display:flex;align-items:center;gap:6px;
+}
+.gh-preview-cat::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 6px var(--accent);
+  animation:blink 2s infinite;
+}
+.gh-featured-body{
+  padding:28px 36px 28px;
+  display:flex;flex-direction:column;flex:1;
+}
+
+/* Repo card preview thumbnail */
+.gh-repo-thumb{
+  width:100%;height:140px;
+  position:relative;overflow:hidden;
+  border-radius:12px 12px 0 0;
+  margin:-28px -28px 18px -28px;
+  width:calc(100% + 56px);
+  flex-shrink:0;
+}
+.gh-repo-thumb img{
+  width:100%;height:100%;object-fit:cover;object-position:top left;
+  display:block;
+  filter:brightness(.8) saturate(1.1);
+  transition:transform .5s var(--ease),filter .35s;
+}
+.gh-repo-card:hover .gh-repo-thumb img{transform:scale(1.05);filter:brightness(.9) saturate(1.2)}
+.gh-repo-thumb-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(8,12,20,0) 30%,rgba(8,12,20,.92) 100%);
+  pointer-events:none;
+}
+.gh-repo-thumb-cat{
+  position:absolute;bottom:8px;left:10px;
+  font-family:var(--font-mono);font-size:.46rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);background:rgba(8,12,20,.6);
+  border:1px solid rgba(var(--accent-rgb),.22);
+  backdrop-filter:blur(6px);
+  padding:2px 7px;border-radius:3px;
+}
+
+/* ── REPO CARDS ── */
+.gh-repo-card{
+  flex-shrink:0;width:340px;
+  border-radius:16px;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  padding:28px 28px 24px;
+  display:flex;flex-direction:column;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,transform .35s var(--ease),box-shadow .3s;
+  will-change:transform;
+  padding-top:0;
+}
+.gh-repo-card:hover{
+  border-color:rgba(var(--accent-rgb),.28);
+  transform:translateY(-6px) scale(1.015);
+  box-shadow:0 20px 50px rgba(0,0,0,.3),0 0 0 1px rgba(var(--accent-rgb),.12);
+}
+.gh-repo-card::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(var(--accent-rgb),.06),transparent 70%);
+  opacity:0;
+  transition:opacity .3s;
+  pointer-events:none;
+}
+.gh-repo-card:hover::after{opacity:1}
+.gh-repo-idx{
+  font-family:var(--font-mono);font-size:.52rem;
+  letter-spacing:.18em;color:var(--gray-mid);
+  margin-bottom:14px;display:flex;justify-content:space-between;
+  align-items:center;
+}
+.gh-repo-idx-num{
+  font-size:.7rem;color:var(--accent);opacity:.6;
+}
+.gh-repo-name{
+  font-family:var(--font-head);font-size:1.05rem;
+  font-weight:700;color:var(--text);margin-bottom:10px;
+  letter-spacing:-.02em;line-height:1.2;
+}
+.gh-repo-desc{
+  font-size:.82rem;color:var(--muted);line-height:1.75;
+  flex-grow:1;margin-bottom:18px;
+  display:-webkit-box;-webkit-line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+.gh-repo-footer{
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  border-top:1px solid var(--border);padding-top:14px;
+}
+.gh-repo-stat{
+  display:flex;align-items:center;gap:5px;
+  font-family:var(--font-mono);font-size:.58rem;
+  color:var(--muted);
+}
+.gh-repo-stat svg{
+  width:11px;height:11px;fill:none;
+  stroke:var(--gray-mid);stroke-width:1.5;
+}
+.gh-repo-lang{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:.58rem;color:var(--muted);
+  margin-left:auto;
+}
+.gh-repo-lang-dot{
+  width:8px;height:8px;border-radius:50%;
+}
+.gh-repo-link{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:.6rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;
+  opacity:.7;margin-top:10px;
+  transition:opacity .2s,transform .2s var(--ease);
+  will-change:transform;
+}
+.gh-repo-link:hover{opacity:1;transform:translateX(4px)}
+
+/* ── END CARD ── */
+.gh-end-card{
+  flex-shrink:0;width:280px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 32px;
+  border-radius:16px;
+  border:1px dashed rgba(var(--accent-rgb),.18);
+  text-align:center;
+  opacity:.6;
+}
+.gh-end-icon{
+  width:48px;height:48px;margin-bottom:16px;
+  stroke:var(--accent);fill:none;opacity:.5;
+}
+.gh-end-text{
+  font-family:var(--font-mono);font-size:.68rem;
+  letter-spacing:.12em;color:var(--muted);
+  text-transform:uppercase;line-height:1.8;
+}
+.gh-end-link{
+  margin-top:16px;font-family:var(--font-mono);
+  font-size:.58rem;color:var(--accent);
+  text-decoration:none;letter-spacing:.1em;
+  opacity:.8;border-bottom:1px solid rgba(var(--accent-rgb),.3);
+  transition:opacity .2s;
+}
+.gh-end-link:hover{opacity:1}
+
+/* ── Loading / Error states for GitHub section ── */
+#gh2-loading{
+  position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;
+  z-index:5;
+}
+.gh2-loader-inner{
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+}
+.gh2-spinner{
+  width:40px;height:40px;
+  border:2px solid var(--track);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gh2-loader-text{
+  font-family:var(--font-mono);font-size:.62rem;
+  letter-spacing:.18em;color:var(--muted);text-transform:uppercase;
+}
+#gh2-error{
+  position:absolute;inset:0;display:none;
+  align-items:center;justify-content:center;
+  z-index:5;flex-direction:column;gap:14px;text-align:center;
+}
+.gh2-err-text{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:#FF6B6B;letter-spacing:.06em;
+}
+.gh2-retry{
+  height:36px;padding:0 18px;
+  border:1px solid rgba(255,107,107,.3);
+  background:transparent;color:#FF6B6B;
+  font-family:var(--font-mono);font-size:.62rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  border-radius:8px;cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.gh2-retry:hover{
+  border-color:#FF6B6B;
+  background:rgba(255,107,107,.06);
+}
+
+/* ── LANGUAGE COLORS MAP ── */
+/* (applied via JS) */
+
 /* ── RESPONSIVE ── */
 @media(max-width:1020px){
   main{margin-left:0;margin-right:0}
@@ -817,10 +1087,15 @@ footer{
   .con-links{gap:20px}
   .pl{font-size:clamp(1.5rem,5.5vw,2.2rem)}
   #philosophy{padding:70px 28px}
-  .proj-inner{grid-template-columns:1fr;gap:40px;padding:0 28px}
-  .proj-right{height:260px}
-  .proj-progress-line,.proj-node{display:none}
-  .proj-left{padding-left:0}
+
+  /* GitHub section mobile */
+  .gh-intro{padding:28px 24px 0}
+  .gh-intro-inner{flex-direction:column;align-items:flex-start;gap:14px}
+  .gh-track{padding:0 24px;gap:20px}
+  .gh-featured{width:min(90vw,400px)}
+  .gh-preview{height:150px}
+  .gh-repo-thumb{height:110px}
+  .gh-repo-card{width:min(80vw,320px)}
 }
 </style>
 </head>
@@ -845,9 +1120,10 @@ footer{
       <svg class="ni" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       <span class="nl">Skills</span>
     </div>
-    <div class="nav-item" data-s="projects" onclick="navTo('#projects')">
-      <svg class="ni" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      <span class="nl">Projects</span>
+
+    <div class="nav-item" data-s="github" onclick="navTo('#github')">
+      <svg class="ni" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      <span class="nl">GitHub</span>
     </div>
     <div class="nav-item" data-s="bl4ckdot" onclick="navTo('#bl4ckdot')">
       <svg class="ni" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9"/></svg>
@@ -906,7 +1182,7 @@ footer{
       <div class="sys-row"><span class="sys-k">FOCUS&nbsp;&nbsp;&nbsp;</span><span>BUG BOUNTY + SYSTEM DESIGN</span></div>
     </div>
     <div class="hero-btns">
-      <button class="btn-p" onclick="navTo('#projects')">View Projects</button>
+      <button class="btn-p" onclick="navTo('#github')">View Projects</button>
       <button class="btn-g" onclick="navTo('#contact')">Contact</button>
     </div>
   </div>
@@ -977,43 +1253,63 @@ footer{
   </div>
 </section>
 
-<!-- PROJECTS — VERTICAL PIN + REVEAL FLOW -->
-<section id="projects">
-  <div class="proj-pin-wrap" id="projPinWrap">
-    <div class="proj-sticky">
-      <div class="proj-inner">
 
-        <!-- LEFT: static info + progress -->
-        <div class="proj-left" id="projLeft">
-          <div class="proj-progress-line" id="projProgressLine"></div>
-          <!-- nodes injected by JS -->
-          <div id="projNodes"></div>
-          <div class="proj-section-label">03 — Projects</div>
-          <div class="proj-section-title">
-            Attack<br><span style="color:var(--accent)">Surface</span>
-          </div>
-          <div class="proj-counter">
-            <span id="projCurrent">01</span> / <span id="projTotal">—</span>
-          </div>
-          <div class="proj-hint">Scroll to navigate</div>
-        </div>
 
-        <!-- RIGHT: animated cards -->
-        <div class="proj-right" id="projRight">
-          <div id="gh-loading" class="gh-load">Loading repositories…</div>
-          <div id="gh-skeleton" class="gh-sk" hidden>
-            <div class="gh-skl w6"></div>
-            <div class="gh-skl w9"></div>
-            <div class="gh-skl w7"></div>
-            <div class="gh-skl w5"></div>
-          </div>
-          <div id="gh-error" class="gh-err" hidden></div>
-          <button id="gh-retry" class="gh-retry" hidden onclick="loadGitHubRepos(true)">Retry</button>
-          <div id="gh-empty" class="gh-empty-msg" hidden>No repositories found.</div>
-          <!-- .proj-card elements injected by JS -->
-        </div>
+<!-- GITHUB SHOWCASE -->
+<section id="github">
+  <div class="gh-pin-outer" id="ghPinOuter">
+    <div class="gh-pin-sticky" id="ghPinSticky">
 
+      <!-- Parallax depth layers -->
+      <div class="gh-parallax-layer">
+        <div class="gh-grid-lines" id="ghGridLines"></div>
+        <div class="gh-glow-orb orb1" id="ghOrb1"></div>
+        <div class="gh-glow-orb orb2" id="ghOrb2"></div>
+        <div class="gh-glow-orb orb3" id="ghOrb3"></div>
       </div>
+
+      <!-- Top intro header -->
+      <div class="gh-intro" id="ghIntro">
+        <div class="gh-intro-inner">
+          <div class="gh-intro-left">
+            <div class="gh-intro-label">03 — GitHub Showcase</div>
+            <div class="gh-intro-title">Code in the <em>open.</em></div>
+          </div>
+          <div class="gh-intro-right">
+            <div class="gh-scroll-hint">
+              Scroll to explore
+              <div class="gh-scroll-arrow">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="gh-progress-bar">
+              <div class="gh-progress-fill" id="ghProgressFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div id="gh2-loading">
+        <div class="gh2-loader-inner">
+          <div class="gh2-spinner"></div>
+          <div class="gh2-loader-text">Fetching repositories...</div>
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div id="gh2-error">
+        <div class="gh2-err-text">Unable to reach GitHub API.</div>
+        <button class="gh2-retry" onclick="loadGH2Repos(true)">Retry</button>
+      </div>
+
+      <!-- Horizontal scroll track -->
+      <div class="gh-track-wrap" id="ghTrackWrap">
+        <div class="gh-track" id="ghTrack">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1075,6 +1371,23 @@ try {
   lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
   function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
+  // Integrate Lenis with GSAP ScrollTrigger
+  if (typeof ScrollTrigger !== 'undefined') {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    ScrollTrigger.scrollerProxy(document.body, {
+      scrollTop(value) {
+        if (arguments.length) { lenis.scrollTo(value, { immediate: true }); }
+        return window.scrollY;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+      },
+      pinType: document.body.style.transform ? 'transform' : 'fixed'
+    });
+    ScrollTrigger.defaults({ scroller: document.body });
+  }
 } catch(e) {
   // Lenis unavailable (CDN blocked), graceful fallback
   document.documentElement.style.scrollBehavior = 'smooth';
@@ -1311,8 +1624,6 @@ function handleReveal() {
     }
   });
 
-  // project scroll driver
-  drivePinScroll();
 }
 
 window.addEventListener('scroll', handleReveal, { passive: true });
@@ -1324,136 +1635,100 @@ window.addEventListener('scroll', () => {
   if (mf) mf.style.transform = `translateY(${-window.scrollY * 0.04}px)`;
 }, { passive: true });
 
-/* ══════════════════════════
-   VERTICAL PIN + REVEAL FLOW
-   Pure transform + opacity + clip-path
-══════════════════════════ */
-const SCROLL_PER_CARD = window.innerHeight * 1.1; // scroll distance per project
-let projCards = []; // DOM card elements
-let projRepos = [];
-let currentProjIdx = -1;
 
-function buildProjectNodes(count) {
-  const wrap = document.getElementById('projPinWrap');
-  const nodesEl = document.getElementById('projNodes');
-  const progressLine = document.getElementById('projProgressLine');
-  const totalEl = document.getElementById('projTotal');
 
-  // Set sticky scroll height
-  wrap.style.height = (count * SCROLL_PER_CARD + window.innerHeight) + 'px';
-  totalEl.textContent = String(count).padStart(2, '0');
+/* ══════════════════════════════════════════════════════
+   GITHUB SHOWCASE — HORIZONTAL SCROLL ENGINE
+   GSAP ScrollTrigger + Vertical→Horizontal drive
+══════════════════════════════════════════════════════ */
 
-  // Build progress nodes
-  nodesEl.innerHTML = '';
-  const totalH = (count - 1) * 52; // spacing between nodes
-  progressLine.style.height = totalH + 'px';
-  progressLine.style.top = '8px';
+const LANG_COLORS = {
+  'JavaScript':'#F7DF1E','TypeScript':'#3178C6','Python':'#3572A5',
+  'HTML':'#E44B23','CSS':'#1572B6','Shell':'#89E051','Rust':'#DEA584',
+  'Go':'#00ADD8','C':'#555555','C++':'#F34B7D','Java':'#B07219',
+  'Ruby':'#701516','Dockerfile':'#384D54','Makefile':'#427819',
+  'Jupyter Notebook':'#DA5B0B','PHP':'#4F5D95','Swift':'#FFAC45',
+  'Kotlin':'#A97BFF','Dart':'#00B4AB','Vue':'#41B883','Svelte':'#FF3E00',
+  'SCSS':'#C6538C','PowerShell':'#012456','Bash':'#89E051',
+};
 
-  for (let i = 0; i < count; i++) {
-    const node = document.createElement('div');
-    node.className = 'proj-node';
-    node.style.top = (i * 52) + 'px';
-    node.dataset.idx = i;
-    node.addEventListener('click', () => jumpToProject(i));
-    nodesEl.appendChild(node);
+function getLangColor(lang) {
+  return LANG_COLORS[lang] || 'var(--accent)';
+}
+
+/* ── REPO CATEGORY → PREVIEW IMAGE MAP ── */
+const REPO_PREVIEWS = {
+  malware:    { img: 'preview_malware.png',    label: 'Malware Analysis' },
+  bugbounty:  { img: 'preview_bugbounty.png',  label: 'Bug Bounty' },
+  soc:        { img: 'preview_soc.png',        label: 'SOC / Threat Intel' },
+  ai:         { img: 'preview_ai.png',         label: 'AI Security' },
+  osint:      { img: 'preview_osint.png',      label: 'OSINT' },
+  automation: { img: 'preview_automation.png', label: 'Security Automation' },
+};
+
+const REPO_KEYWORDS = [
+  { key: 'malware',    words: ['malware','sandbox','virus','trojan','reverse','ghidra','ida','disasm','binary','exploit','shellcode','ransomware','rootkit','pe','elf','assembly'] },
+  { key: 'bugbounty',  words: ['bounty','recon','xss','sqli','ssrf','idor','nuclei','ffuf','burp','subdomain','enumerat','vuln','pentest','payload','injection','owasp','web-hack','attack-surface','hackerone','bugcrowd','scope'] },
+  { key: 'soc',        words: ['soc','siem','snort','suricata','splunk','elk','threat','incident','alert','monitor','detection','network','forensic','pcap','wireshark','log','ids','ips','hunt'] },
+  { key: 'ai',         words: ['ai','ml','gpt','llm','bert','neural','model','transforme','pytorch','tensorflow','langchain','agent','nlp','classify','predict','intelligence','deep-learn','machine-learn'] },
+  { key: 'osint',      words: ['osint','maltego','shodan','intel','investigate','recon-ng','geoint','dork','footprint','passive','whois','dns','pivot','social','scrape','harvest'] },
+  { key: 'automation', words: ['automat','pipeline','script','workflow','asyncio','cron','scan','crawler','bot','ci','cd','action','deploy','docker','ansible','terraform','helm','orchestrat','nuclei','tool','util'] },
+];
+
+function getRepoPreview(repo) {
+  const hay = [
+    repo.name || '',
+    repo.description || '',
+    repo.language || '',
+    ...(repo.topics || [])
+  ].join(' ').toLowerCase();
+
+  for (const { key, words } of REPO_KEYWORDS) {
+    if (words.some(w => hay.includes(w))) return REPO_PREVIEWS[key];
   }
+  // fallback: cycle through previews by repo index
+  return null;
 }
 
-function setProjectActive(idx) {
-  if (idx === currentProjIdx) return;
-  const prev = currentProjIdx;
-  currentProjIdx = idx;
-
-  // Update counter
-  const el = document.getElementById('projCurrent');
-  if (el) el.textContent = String(idx + 1).padStart(2, '0');
-
-  // Update nodes
-  document.querySelectorAll('.proj-node').forEach((n, i) => {
-    n.classList.toggle('active', i === idx);
-  });
-
-  // Animate cards
-  projCards.forEach((card, i) => {
-    card.classList.remove('active', 'exit-up', 'enter-below');
-    if (i === idx) {
-      // Force reflow to re-trigger animation
-      card.classList.add('enter-below');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          card.classList.remove('enter-below');
-          card.classList.add('active');
-        });
-      });
-    } else if (i < idx) {
-      card.classList.add('exit-up');
-    }
-    // i > idx stays in default (enter-below state via CSS initial)
-  });
+const PREVIEW_CYCLE = ['malware','bugbounty','soc','ai','osint','automation'];
+let _previewIdx = 0;
+function getOrCyclePreview(repo) {
+  const match = getRepoPreview(repo);
+  if (match) return match;
+  return REPO_PREVIEWS[PREVIEW_CYCLE[_previewIdx++ % PREVIEW_CYCLE.length]];
 }
 
-function jumpToProject(idx) {
-  const wrap = document.getElementById('projPinWrap');
-  if (!wrap) return;
-  const top = wrap.offsetTop + idx * SCROLL_PER_CARD;
-  if (lenis) lenis.scrollTo(top, { duration: 1 });
-  else window.scrollTo({ top, behavior: 'smooth' });
-}
-
-function drivePinScroll() {
-  const wrap = document.getElementById('projPinWrap');
-  if (!wrap || !projCards.length) return;
-
-  const wrapTop = wrap.getBoundingClientRect().top;
-  const scrolledInto = -wrapTop; // positive when we've scrolled past wrap top
-  const totalScrollable = SCROLL_PER_CARD * projCards.length;
-
-  if (scrolledInto < 0 || scrolledInto > totalScrollable) return;
-
-  const idx = Math.min(
-    Math.floor(scrolledInto / SCROLL_PER_CARD),
-    projCards.length - 1
-  );
-  setProjectActive(idx);
-}
-
-/* ══════════════════════════
-   GITHUB API
-══════════════════════════ */
-const GH = {
+const GH2 = {
   username: 'Dwarak18',
-  maxRepos: 12,
-  excludedRepos: [],
-  cacheKey: 'dw_gh_v4',
+  maxRepos: 15,
+  cacheKey: 'dw_gh2_v1',
   cacheTtl: 1000 * 60 * 15
 };
 
-// Prefer username from the GitHub social link if available.
-const ghProfileLink = document.querySelector('#social-bar a[aria-label="GitHub"]');
-if (ghProfileLink) {
+// Sync username from social bar link
+const _ghLink = document.querySelector('#social-bar a[aria-label="GitHub"]');
+if (_ghLink) {
   try {
-    const u = new URL(ghProfileLink.href);
-    const p = u.pathname.replace(/^\/+|\/+$/g, '');
-    if (p) GH.username = p;
+    const _u = new URL(_ghLink.href);
+    const _p = _u.pathname.replace(/^\/+|\/+$/g, '');
+    if (_p) GH2.username = _p;
   } catch {}
 }
 
-function parseCache() {
+function gh2ParseCache() {
   try {
-    const r = localStorage.getItem(GH.cacheKey);
+    const r = localStorage.getItem(GH2.cacheKey);
     if (!r) return null;
     const p = JSON.parse(r);
-    if (!p.ts || Date.now() - p.ts > GH.cacheTtl) return null;
+    if (!p.ts || Date.now() - p.ts > GH2.cacheTtl) return null;
     return p.data;
   } catch { return null; }
 }
-function writeCache(d) {
-  try { localStorage.setItem(GH.cacheKey, JSON.stringify({ ts: Date.now(), data: d })); } catch {}
+function gh2WriteCache(d) {
+  try { localStorage.setItem(GH2.cacheKey, JSON.stringify({ ts: Date.now(), data: d })); } catch {}
 }
-function san(s) {
-  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function relDate(ds) {
+
+function gh2RelDate(ds) {
   const d = Math.max(1, Date.now() - new Date(ds).getTime());
   const mn = Math.floor(d / 6e4), hr = Math.floor(mn / 60), dy = Math.floor(hr / 24);
   const wk = Math.floor(dy / 7), mo = Math.floor(dy / 30);
@@ -1464,104 +1739,297 @@ function relDate(ds) {
   return mo + 'mo ago';
 }
 
-function setGhState(state, msg) {
-  document.getElementById('gh-loading').hidden = state !== 'loading';
-  document.getElementById('gh-skeleton').hidden = state !== 'skeleton';
-  document.getElementById('gh-error').hidden = state !== 'error';
-  document.getElementById('gh-retry').hidden = state !== 'error';
-  document.getElementById('gh-empty').hidden = state !== 'empty';
-  if (state === 'error' && msg) document.getElementById('gh-error').textContent = msg;
+function gh2San(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function buildCards(repos) {
-  const right = document.getElementById('projRight');
-  // Remove old cards
-  right.querySelectorAll('.proj-card').forEach(c => c.remove());
-  projCards = [];
-  projRepos = repos;
-  currentProjIdx = -1;
+let gh2ST = null; // GSAP ScrollTrigger instance
+let gh2Loaded = false;
+let gh2Loading = false;
 
-  repos.forEach((repo, i) => {
-    const card = document.createElement('div');
-    card.className = 'proj-card';
-    const repoDesc = (repo.description && repo.description.trim())
+function setGH2State(state, msg) {
+  const loadEl = document.getElementById('gh2-loading');
+  const errEl = document.getElementById('gh2-error');
+  const trackEl = document.getElementById('ghTrackWrap');
+  if (loadEl) loadEl.style.display = state === 'loading' ? 'flex' : 'none';
+  if (errEl) errEl.style.display = state === 'error' ? 'flex' : 'none';
+  if (trackEl) trackEl.style.opacity = state === 'content' ? '1' : '0';
+  if (state === 'error' && msg) {
+    const t = errEl && errEl.querySelector('.gh2-err-text');
+    if (t) t.textContent = msg;
+  }
+}
+
+function buildGH2Cards(repos) {
+  const track = document.getElementById('ghTrack');
+  if (!track) return;
+  track.innerHTML = '';
+  _previewIdx = 0; // reset cycle for consistent ordering
+
+  // Sort by stars desc for featured
+  const sorted = [...repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
+  const featured = sorted[0];
+  const rest = repos.filter(r => r.name !== featured.name);
+
+  // Featured card
+  const featuredDesc = (featured.description && featured.description.trim())
+    ? featured.description
+    : 'The most starred repository — explore the code to see what it does.';
+
+  const fCard = document.createElement('div');
+  fCard.className = 'gh-featured';
+  const fPreview = getOrCyclePreview(featured);
+  fCard.innerHTML = `
+    <div class="gh-preview">
+      <img src="${fPreview.img}" alt="${gh2San(fPreview.label)} preview" loading="lazy">
+      <div class="gh-preview-overlay"></div>
+      <div class="gh-preview-cat">${gh2San(fPreview.label)}</div>
+    </div>
+    <div class="gh-featured-body">
+    <div class="gh-featured-corner">
+      <svg viewBox="0 0 60 60"><path d="M0 0 L60 0 L60 60"/><circle cx="50" cy="10" r="3"/></svg>
+    </div>
+    <div class="gh-featured-badge">Featured Repository</div>
+    <div class="gh-featured-name">${gh2San(featured.name)}</div>
+    <div class="gh-featured-desc">${gh2San(featuredDesc)}</div>
+    <div class="gh-featured-meta">
+      ${featured.language ? `
+      <div class="gh-meta-item">
+        <div class="gh-lang-dot" style="background:${getLangColor(featured.language)}"></div>
+        ${gh2San(featured.language)}
+      </div>` : ''}
+      ${featured.stargazers_count > 0 ? `
+      <div class="gh-meta-item">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        ${featured.stargazers_count}
+      </div>` : ''}
+      ${featured.forks_count > 0 ? `
+      <div class="gh-meta-item">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        ${featured.forks_count}
+      </div>` : ''}
+      <div class="gh-meta-item">${gh2RelDate(featured.updated_at)}</div>
+    </div>
+    <a class="gh-featured-link" href="${gh2San(featured.html_url)}" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      View on GitHub
+    </a>
+    </div>
+  `;
+  fCard.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'A') window.open(featured.html_url, '_blank');
+  });
+  track.appendChild(fCard);
+
+  // Repo cards
+  rest.forEach((repo, i) => {
+    const desc = (repo.description && repo.description.trim())
       ? repo.description
-      : 'No description provided yet. Open the repository to explore details.';
+      : 'Explore this repository on GitHub.';
+
+    const card = document.createElement('div');
+    card.className = 'gh-repo-card';
+    const langColor = getLangColor(repo.language);
+    const rPreview = getOrCyclePreview(repo);
     card.innerHTML = `
-      <div class="pc-tag">${san(repo.language || 'Mixed')} &nbsp;·&nbsp; ${relDate(repo.updated_at)}${repo.stargazers_count > 0 ? ' &nbsp;·&nbsp; ⭐ ' + repo.stargazers_count : ''}</div>
-      <div class="pc-name">${san(repo.name)}</div>
-      <div class="pc-desc">${san(repoDesc)}</div>
-      <a class="pc-link" href="${san(repo.html_url)}" target="_blank" rel="noopener">
-        → View on GitHub
-      </a>
+      <div class="gh-repo-thumb">
+        <img src="${rPreview.img}" alt="${gh2San(rPreview.label)}" loading="lazy">
+        <div class="gh-repo-thumb-overlay"></div>
+        <div class="gh-repo-thumb-cat">${gh2San(rPreview.label)}</div>
+      </div>
+      <div class="gh-repo-idx">
+        <span>${gh2San(repo.language || 'Mixed')}</span>
+        <span class="gh-repo-idx-num">${String(i + 1).padStart(2, '0')}</span>
+      </div>
+      <div class="gh-repo-name">${gh2San(repo.name)}</div>
+      <div class="gh-repo-desc">${gh2San(desc)}</div>
+      <div class="gh-repo-footer">
+        ${repo.stargazers_count > 0 ? `
+        <div class="gh-repo-stat">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          ${repo.stargazers_count}
+        </div>` : ''}
+        ${repo.forks_count > 0 ? `
+        <div class="gh-repo-stat">
+          <svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+          ${repo.forks_count}
+        </div>` : ''}
+        <div class="gh-repo-stat">${gh2RelDate(repo.updated_at)}</div>
+        ${repo.language ? `
+        <div class="gh-repo-lang" style="margin-left:auto">
+          <div class="gh-repo-lang-dot" style="background:${langColor}"></div>
+          ${gh2San(repo.language)}
+        </div>` : ''}
+      </div>
+      <a class="gh-repo-link" href="${gh2San(repo.html_url)}" target="_blank" rel="noopener">→ View Repo</a>
     `;
-    right.appendChild(card);
-    projCards.push(card);
+    card.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'A') window.open(repo.html_url, '_blank');
+    });
+    track.appendChild(card);
   });
 
-  buildProjectNodes(repos.length);
-  // init first
-  setProjectActive(0);
+  // End card
+  const endCard = document.createElement('div');
+  endCard.className = 'gh-end-card';
+  endCard.innerHTML = `
+    <svg class="gh-end-icon" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    <div class="gh-end-text">That's all ${repos.length} repos.<br>More in progress.</div>
+    <a class="gh-end-link" href="https://github.com/${gh2San(GH2.username)}" target="_blank" rel="noopener">github.com/${gh2San(GH2.username)}</a>
+  `;
+  track.appendChild(endCard);
+
+  // Initialize GSAP horizontal scroll
+  initGH2Scroll();
 }
 
-let ghLoaded = false;
-let ghLoading = false;
-async function loadGitHubRepos(force = false) {
-  if (ghLoading) return;
-  if (ghLoaded && !force) return;
-  ghLoading = true;
-  setGhState('skeleton');
+function initGH2Scroll() {
+  const outer = document.getElementById('ghPinOuter');
+  const track = document.getElementById('ghTrack');
+  const progressFill = document.getElementById('ghProgressFill');
+  const orb1 = document.getElementById('ghOrb1');
+  const orb2 = document.getElementById('ghOrb2');
+  const orb3 = document.getElementById('ghOrb3');
+
+  if (!outer || !track || typeof gsap === 'undefined') return;
+
+  // Kill previous
+  if (gh2ST) gh2ST.kill();
+
+  // Wait for layout
+  requestAnimationFrame(() => {
+    const trackScrollWidth = track.scrollWidth;
+    const viewWidth = window.innerWidth;
+    const totalShift = trackScrollWidth - viewWidth + 200; // extra padding
+    const scrollDistance = totalShift * 1.4;
+
+    // Set outer height so we have enough scroll real estate
+    outer.style.height = (scrollDistance + window.innerHeight) + 'px';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    gh2ST = ScrollTrigger.create({
+      trigger: outer,
+      start: 'top top',
+      end: () => `+=${scrollDistance}`,
+      pin: '#ghPinSticky',
+      pinSpacing: false,
+      scrub: 1,
+      onUpdate: (self) => {
+        const p = self.progress;
+
+        // Move track horizontally
+        gsap.set(track, { x: -totalShift * p });
+
+        // Progress bar
+        if (progressFill) progressFill.style.width = (p * 100) + '%';
+
+        // Parallax orbs
+        if (orb1) gsap.set(orb1, { x: p * 120, y: p * -40 });
+        if (orb2) gsap.set(orb2, { x: p * -80, y: p * 30 });
+        if (orb3) gsap.set(orb3, { x: p * 60, y: p * 20 });
+
+        // Grid parallax
+        const grid = document.getElementById('ghGridLines');
+        if (grid) gsap.set(grid, { backgroundPositionX: (-p * 80) + 'px' });
+      }
+    });
+
+    // Animate cards on entry
+    const cards = track.querySelectorAll('.gh-featured, .gh-repo-card');
+    cards.forEach((card, i) => {
+      gsap.fromTo(card,
+        { opacity: 0, y: 40, scale: 0.94 },
+        {
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.7,
+          delay: i * 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: outer,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    });
+  });
+}
+
+async function loadGH2Repos(force = false) {
+  if (gh2Loading) return;
+  if (gh2Loaded && !force) return;
+  gh2Loading = true;
+  setGH2State('loading');
   try {
-    const cached = !force ? parseCache() : null;
+    const cached = !force ? gh2ParseCache() : null;
     const raw = cached || await (async () => {
       const r = await fetch(
-        `https://api.github.com/users/${encodeURIComponent(GH.username)}/repos?per_page=100&sort=updated&type=all`,
+        `https://api.github.com/users/${encodeURIComponent(GH2.username)}/repos?per_page=100&sort=updated&type=public`,
         { headers: { Accept: 'application/vnd.github+json' } }
       );
       if (!r.ok) throw new Error(`GitHub API ${r.status}`);
       const d = await r.json();
-      writeCache(d);
+      gh2WriteCache(d);
       return d;
     })();
 
-    if (!Array.isArray(raw)) {
-      throw new Error('GitHub response format unexpected.');
+    if (!Array.isArray(raw)) throw new Error('Unexpected API response.');
+
+    const repos = raw
+      .filter(r => !r.fork)
+      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+      .slice(0, GH2.maxRepos);
+
+    if (!repos.length) {
+      setGH2State('error', 'No public repositories found.');
+      gh2Loading = false;
+      return;
     }
 
-    const excl = new Set(GH.excludedRepos.map(x => x.toLowerCase()));
-    const repos = raw
-      .filter(r => !excl.has(r.name.toLowerCase()))
-      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-      .slice(0, GH.maxRepos);
-
-    if (!repos.length) { setGhState('empty'); return; }
-
-    setGhState('content');
-    buildCards(repos);
-    ghLoaded = true;
-    ghLoading = false;
-  } catch (e) {
-    ghLoaded = false;
-    ghLoading = false;
-    setGhState('error', e?.message || 'Unable to load repositories.');
+    setGH2State('content');
+    buildGH2Cards(repos);
+    gh2Loaded = true;
+  } catch(e) {
+    gh2Loaded = false;
+    setGH2State('error', e?.message || 'Unable to load repositories.');
+  } finally {
+    gh2Loading = false;
   }
 }
 
-// Lazy load when projects section is near viewport
+// Load GitHub section — eager + lazy fallback
+// Always attempt on page load for above-fold or near-fold position
+loadGH2Repos();
 if ('IntersectionObserver' in window) {
-  const obs = new IntersectionObserver(entries => {
+  const gh2Obs = new IntersectionObserver(entries => {
     entries.forEach(en => {
-      if (en.isIntersecting) { loadGitHubRepos(); obs.disconnect(); }
+      if (en.isIntersecting) { loadGH2Repos(); gh2Obs.disconnect(); }
     });
-  }, { rootMargin: '200px 0px' });
-  const ps = document.getElementById('projects');
-  if (ps) obs.observe(ps);
-} else { loadGitHubRepos(); }
+  }, { rootMargin: '600px 0px' });
+  const ghSec = document.getElementById('github');
+  if (ghSec) gh2Obs.observe(ghSec);
+}
 
-// Fallback: trigger load once even if observer does not fire.
-setTimeout(() => {
-  if (!ghLoaded) loadGitHubRepos();
-}, 1800);
+// Re-init on resize
+window.addEventListener('resize', () => {
+  if (gh2Loaded) {
+    clearTimeout(window._gh2ResizeTimer);
+    window._gh2ResizeTimer = setTimeout(initGH2Scroll, 200);
+  }
+});
+
+// Cursor hover on GitHub cards
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('.gh-featured,.gh-repo-card,.gh-featured-link,.gh-repo-link')) {
+    document.body.classList.add('hov');
+  }
+});
+document.addEventListener('mouseout', e => {
+  if (e.target.closest('.gh-featured,.gh-repo-card,.gh-featured-link,.gh-repo-link')) {
+    document.body.classList.remove('hov');
+  }
+});
 </script>
 </body>
 </html>
